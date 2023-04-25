@@ -194,7 +194,7 @@ def checkSum(digit):
         checksum = checksum + int(x)
     return checksum%10
 
-### ABRITARY CONSTANTS FOR KITSUNE
+### ABRITARY CONSTANTS FOR ISS
 
 # LINE 1
 satelliteName = 'ISS (ZARYA)'
