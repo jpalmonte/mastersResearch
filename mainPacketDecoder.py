@@ -1,10 +1,12 @@
+# MAIN CODE TO DECODE AX.25 PACKETS FROM HS SOUNDMODEM AND OUTPUT THE TLE FILE FOR GPREDICT UPDATE
+
 import socket
 import numpy as np
 from ctypes import *
   
 
 HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
-PORT = 8100  # Port to listen on (non-privileged ports are > 1023)
+PORT = 8100  # Port to listen on from HS soundmodem(non-privileged ports are > 1023)
 
 # LISTEN TO KISS PORT OF AX.25 HS SOUNDMODEM
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
