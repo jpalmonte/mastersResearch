@@ -112,7 +112,7 @@ def getDecimal(s):
 EP_int = ((EP & 0xFFFF8000000) >> 3) >> (6*4)
 EP_dec = EP & 0x00007FFFFFF
 epoch = "{:.8f}".format(int(EP_int) + int(EP_dec) / 1e8)
-print('Epoch Year and Julian Date Fraction = ', epoch)
+#print('Epoch Year and Julian Date Fraction = ', epoch)
 
 # 1ST DERIVATIVE OF MEAN MOTION
 DV_sign = '-'
@@ -124,7 +124,7 @@ DV2 = (DV & 0x0000FFFF) / 1e8
 derivative = "{:.8f}".format(round(DV1 + DV2,8))
 if (DV_sign == '-') : derivative = DV_sign + str(derivative)[1:]
 else: derivative = str(derivative)[1:]
-print('1st Derivative of Mean Motion = ', derivative)
+#print('1st Derivative of Mean Motion = ', derivative)
 
 # DRAG TERM
 DT1 = DT >> 4
@@ -138,41 +138,41 @@ if(DT2 & 0x8 == 0x8):
 	drag = str(DT1) + '-' + str(DT2)
 else: drag = '-' + str(DT1) + '-' + str(DT2)
 #drag = DT_sign + str(DT1) + '-' + str(DT2)
-print('Drag Term = ', drag)
+#print('Drag Term = ', drag)
 
 # INCLINATION
 IN_int = IN >> 16
 IN_dec = (IN & 0x00FFFF) / 1e4
 inclination = "{:.4f}".format(IN_int + IN_dec)
-print('Inclination = ', inclination)
+#print('Inclination = ', inclination)
 
 # RIGHT ASCENSION OF THE ASCENDING NODE 
 RN_int = ((RN & 0xFF8000) >> 3) >> (3*4)
 RN_dec = (RN & 0x007FFF) / 1e4
 raan = "{:.4f}".format(RN_int + RN_dec)
-print("Right Ascension of the Ascending Node = ", raan)
+#print("Right Ascension of the Ascending Node = ", raan)
 
 # ECCENTRICITY
 eccentricity = "{:.7f}".format(EC / 1e7)
 #print("Eccentricity = ", eccentricity) # ACTUAL VALUE WITH DECIMAL POINT
-print("Eccentricity = ", str(eccentricity)[2:]) # DECIMAL POINT ASSUMED
+#print("Eccentricity = ", str(eccentricity)[2:]) # DECIMAL POINT ASSUMED
 
 # ARGUMENT OF PERIGEE
 AP_int = ((AP & 0xFF8000) >> 3) >> (3*4)
 AP_dec = (AP & 0x007FFF) / 1e4
 argPerigee = "{:.4f}".format(AP_int + AP_dec)
-print("Argument of Perigee = ", argPerigee)
+#print("Argument of Perigee = ", argPerigee)
 
 # MEAN ANOMALY
 MA_int = MA >> 16
 MA_dec = (MA & 0x000FFFF) / 1e4
 meanAnomaly = "{:.4f}".format(MA_int + MA_dec)
-print("Mean Anomaly = ", meanAnomaly)
+#print("Mean Anomaly = ", meanAnomaly)
 
 # MEAN MOTION
 meanMotion = toFloat(MM)
 meanMotion = "{:.8f}".format(meanMotion)
-print("Mean Motion = ", meanMotion)
+#print("Mean Motion = ", meanMotion)
 
 
 #########################################################################################################
