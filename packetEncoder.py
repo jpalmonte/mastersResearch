@@ -10,6 +10,7 @@ import requests
 import numpy as n
 from ctypes import *
 import tkinter as tk
+from datetime import datetime
 
 # INPUT TLE DATA FOR TRANSMISSION TO SATELLITE
 
@@ -166,8 +167,10 @@ print('',UL1,'\n',UL2,'\n',UL3,'\n',UL4)
 DL = '51 00 35 04 B0 00 00 01 00 00 01'
 
 # CREATE GUI TO PRINT UPLINK AND DOWNLINK COMMANDS FOR THE TLE
+timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 def create_gui():
     lines_of_strings = [
+        'Retrieved: ' + timestamp + '\n\n',
         name + '\n',
         line1 + '\n',
         line2 + '\n\n',
