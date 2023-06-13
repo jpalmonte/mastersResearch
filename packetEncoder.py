@@ -183,7 +183,7 @@ def create_gui():
 
     root = tk.Tk()
     root.title("Uplink & Downlink Commands for {} TLE".format(name))
-    root.geometry("600x160")
+    root.geometry("600x185")
 
     text_widget = tk.Text(root, height=100, width=100)
     text_widget.pack()
