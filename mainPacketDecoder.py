@@ -196,14 +196,14 @@ def checkSum(digit):
         checksum = checksum + int(x)
     return checksum%10
 
-### ABRITARY CONSTANTS FOR ISS
+### ABRITARY CONSTANTS FOR DIWATA-2B
 
 # LINE 1
-satelliteName = 'ISS (ZARYA)'
-satelliteCatalog = 25544
+satelliteName = 'DIWATA-2B'
+satelliteCatalog = 43678
 classification = 'U'
-intDesignatorYear = 98067
-intDesignatorPiece = 'A'
+intDesignatorYear = 18084
+intDesignatorPiece = 'H'
 secondDerivative = '00000+0'
 ephemeris = 0
 elementSetNumber = 999 # ARBRITARY NUMBER
@@ -250,6 +250,6 @@ TLE_LINE2 = insertData(TLE_LINE2, str(checkSum(TLE_LINE2)), 68)
 outputTLE = satelliteName + '\n' + TLE_LINE1.rstrip() + '\n' + TLE_LINE2.rstrip()
 print(outputTLE)
 
-with open('issTLE.txt', 'w') as file:
+with open('diwataTLE.txt', 'w') as file:
 	file.write(outputTLE)
 	file.close()
