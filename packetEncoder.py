@@ -11,16 +11,16 @@ from ctypes import *
 
 # INPUT TLE DATA FOR TRANSMISSION TO SATELLITE
 
-
-epoch = 23108.95540690
-derivative = '.00019443'
-drag = '34804-3'
-inclination = 51.6391
-raan = 262.0713
-eccentricity = '0006099'
-argPerigee = 208.3097
-meanAnomaly = 234.4315
-meanMotion = 15.49967460
+# DIWATA-2B TLE 6/13/2023
+epoch = 23163.90064120
+derivative = '.00001607'
+drag = '15865-3'
+inclination = 98.0225
+raan = 307.7835
+eccentricity = '0009791'
+argPerigee = 167.9441
+meanAnomaly = 192.1513
+meanMotion = 14.93416279
 epoch_original = epoch
 
 print("Sample TLE Data \n")

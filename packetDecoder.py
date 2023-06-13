@@ -8,7 +8,10 @@ from ctypes import *
   
 # SAMPLE DATA PACKET
 #DATA_PACKET = 0x46ad97ae00011466053fb333191c004c24480011d50680e5715b1d8a41791512
-DATA_PACKET = 0x2d225b1d5d2800124e3087f4b3318f78302c90017d3680c190ea10db4177feab
+#DATA_PACKET = 0x2d225b1d5d2800124e3087f4b3318f78302c90017d3680c190ea10db4177feab
+# DIWATA-2B TLE 6/13/2023
+DATA_PACKET = 0x2d3dd5e44f88000064703df9b6200e1999e9b00263f53a4e10c005e9416ef255 
+
 
 # MASKS TO GET SPECIFIC SECTION OF DATA PACKET
 EP_mask = 0xFFFFFFFFFFF00000000000000000000000000000000000000000000000000000
@@ -163,14 +166,14 @@ def checkSum(digit):
         checksum = checksum + int(x)
     return checksum%10
 
-### ABRITARY CONSTANTS FOR KITSUNE
+### ABRITARY CONSTANTS FOR DIWATA-2B
 
 # LINE 1
-satelliteName = 'ISS (ZARYA)'
-satelliteCatalog = 25544
+satelliteName = 'DIWATA-2B'
+satelliteCatalog = 43678
 classification = 'U'
-intDesignatorYear = 98067
-intDesignatorPiece = 'A'
+intDesignatorYear = 18084
+intDesignatorPiece = 'H'
 secondDerivative = '00000+0'
 ephemeris = 0
 elementSetNumber = 999 # ARBRITARY NUMBER
