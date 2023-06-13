@@ -6,12 +6,13 @@ ENCODE TLE SECTIONS INTO 32-BYTE DATA PACKET
 
 # ADDRESS OF TLE = 04 B0 00 00
 
+import requests
 import numpy as n
 from ctypes import *
 
 # INPUT TLE DATA FOR TRANSMISSION TO SATELLITE
 
-# DIWATA-2B TLE 6/13/2023
+'''# DIWATA-2B TLE 6/13/2023
 epoch = 23163.90064120
 derivative = '.00001607'
 drag = '15865-3'
@@ -22,8 +23,39 @@ argPerigee = 167.9441
 meanAnomaly = 192.1513
 meanMotion = 14.93416279
 epoch_original = epoch
+'''
+# FETCH TLE DATA FROM CELESTRAK
+url = "https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle"
+response = requests.get(url)
+data = response.text
 
-print("Sample TLE Data \n")
+# FILTER TARGET SATELLITE TLE DATA
+satellite = 'DIWATA-2B'
+lines = data.strip().split("\n")
+satellite_tle = []
+for i in range(0, len(lines), 3):
+    if lines[i].startswith(satellite):
+        satellite_tle.append(lines[i:i+3])
+
+# PARSE TLE STRINGS AND EXTRACT VARIABLES
+for tle in satellite_tle:
+    name = tle[0].strip()  
+    line1 = tle[1]
+    line2 = tle[2]
+
+    # SPLIT EACH ROW INTO STRINGS
+    epoch = float(line1[18:32].strip())
+    derivative = line1[33:43].strip()
+    drag = line1[54:61].strip()
+    inclination = float(line2[8:16].strip())
+    raan = float(line2[17:25].strip())
+    eccentricity = line2[26:33].strip()
+    argPerigee = float(line2[34:42].strip())
+    meanAnomaly = float(line2[43:51].strip())
+    meanMotion = float(line2[52:63].strip())
+
+
+print("TLE Data \n")
 print('Epoch Year and Julian Date Fraction = ', epoch)
 print('1st Derivative of Mean Motion = ', derivative)
 print('Drag Term = ', drag)
