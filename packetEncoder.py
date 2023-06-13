@@ -9,6 +9,7 @@ ENCODE TLE SECTIONS INTO 32-BYTE DATA PACKET
 import requests
 import numpy as n
 from ctypes import *
+import tkinter as tk
 
 # INPUT TLE DATA FOR TRANSMISSION TO SATELLITE
 
@@ -163,3 +164,32 @@ print('',UL1,'\n',UL2,'\n',UL3,'\n',UL4)
 
 # DOWNLINK COMMAND
 DL = '51 00 35 04 B0 00 00 01 00 00 01'
+
+# CREATE GUI TO PRINT UPLINK AND DOWNLINK COMMANDS FOR THE TLE
+def create_gui():
+    lines_of_strings = [
+        name + '\n',
+        line1 + '\n',
+        line2 + '\n\n',
+        "UL CMD 1 = {} \n".format(UL_DATA1),
+        "UL CMD 2 = {} \n".format(UL_DATA2),
+        "UL CMD 3 = {} \n".format(UL_DATA3),
+        "UL CMD 4 = {} \n".format(UL_DATA4),
+        "DL COMMAND = {}".format(DL)
+    ]
+
+    root = tk.Tk()
+    root.title("Uplink & Downlink Commands for {} TLE".format(name))
+    root.geometry("600x160")
+
+    text_widget = tk.Text(root, height=100, width=100)
+    text_widget.pack()
+
+    for line in lines_of_strings:
+        text_widget.insert(tk.END, line)
+            
+    root.mainloop()
+
+create_gui()
+
+# run "pyinstaller --onefile packetEncoder.py" to create .exe file
