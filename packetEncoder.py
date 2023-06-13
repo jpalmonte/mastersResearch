@@ -174,16 +174,17 @@ def create_gui():
         name + '\n',
         line1 + '\n',
         line2 + '\n\n',
-        "UL CMD 1 = {} \n".format(UL_DATA1),
-        "UL CMD 2 = {} \n".format(UL_DATA2),
-        "UL CMD 3 = {} \n".format(UL_DATA3),
-        "UL CMD 4 = {} \n".format(UL_DATA4),
+        str(hex(DATA_PACKET)) + '\n\n',
+        "UL CMD 1 = {} \n".format(UL1),
+        "UL CMD 2 = {} \n".format(UL2),
+        "UL CMD 3 = {} \n".format(UL3),
+        "UL CMD 4 = {} \n".format(UL4),
         "DL COMMAND = {}".format(DL)
     ]
 
     root = tk.Tk()
     root.title("Uplink & Downlink Commands for {} TLE".format(name))
-    root.geometry("600x185")
+    root.geometry("600x220")
 
     text_widget = tk.Text(root, height=100, width=100)
     text_widget.pack()
