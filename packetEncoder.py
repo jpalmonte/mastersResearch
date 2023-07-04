@@ -14,25 +14,66 @@ from datetime import datetime
 
 # INPUT TLE DATA FOR TRANSMISSION TO SATELLITE
 
-'''# DIWATA-2B TLE 6/13/2023
-epoch = 23163.90064120
-derivative = '.00001607'
-drag = '15865-3'
-inclination = 98.0225
-raan = 307.7835
-eccentricity = '0009791'
-argPerigee = 167.9441
-meanAnomaly = 192.1513
-meanMotion = 14.93416279
-epoch_original = epoch
-'''
 # FETCH TLE DATA FROM CELESTRAK
 url = "https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle"
 response = requests.get(url)
 data = response.text
 
+
+def inputSatellite():
+    global user_input
+    user_input = entry.get().upper() # INPUT NOT CASE SENSITIVE
+    root.destroy()
+
+# ERROR FLAGS FOR SATELLITE INPUT GUI    
+errorFlag = 1
+notFound = 0
+
+# LOOP UNTIL SATELLITE INPUT IS VALID
+while(errorFlag == 1):
+    root = tk.Tk()
+    root.title("Download TLE Data")
+    root.geometry("280x90")
+
+    # CREATE A LABEL AND AN ENTRY FIELD
+    label = tk.Label(root, text="Enter satellite name:")
+    label.pack()
+    entry = tk.Entry(root)
+    entry.pack()
+
+    # CREATE A BUTTON TO STORE THE INPUT AND CLOSE THE GUI
+    button = tk.Button(root, text="Download TLE", command=inputSatellite)
+    button.pack()
+
+    root.bind('<Return>', lambda event: inputSatellite())
+
+    # CONDITIONAL CHECK IF THE SATELLITE INPUT IS NOT VALID OR AVAILABLE
+    if notFound == 1:
+        text_widget = tk.Text(root, height=100, width=100)
+        text_widget.pack()
+        text_widget.insert(tk.END, "Satellite Not Found")
+
+    # START THE GUI EVENT LOOP
+    root.mainloop()
+
+    # SPLIT THE TLE DATA INTO INDIVIDUAL ENTRIES
+    tle_entries = data.split('\n')
+
+    # FILTER OUT ENTRIES FOR TARGET SATELLITE 
+    filtered_entries = []
+    for i in range(0, len(tle_entries), 3):
+        if user_input == tle_entries[i].strip():
+            notFound = 0 # CLEAR NOT FOUND FLAG
+            errorFlag = 0 # CLEAR ERROR FLAG
+            filtered_entries.extend(tle_entries[i:i+3])
+            break
+        else:
+            notFound = 1 # SET FLAG IF THE SATELLITE INPUT IS NOT VALID
+    
+    
+
 # FILTER TARGET SATELLITE TLE DATA
-satellite = 'DIWATA-2B'
+satellite = user_input
 lines = data.strip().split("\n")
 satellite_tle = []
 for i in range(0, len(lines), 3):
@@ -56,8 +97,8 @@ for tle in satellite_tle:
     meanAnomaly = float(line2[43:51].strip())
     meanMotion = float(line2[52:63].strip())
 
-
-print("TLE Data \n")
+# PRINT FOR DEBUGGING
+'''print("TLE Data \n")
 print('Epoch Year and Julian Date Fraction = ', epoch)
 print('1st Derivative of Mean Motion = ', derivative)
 print('Drag Term = ', drag)
@@ -67,6 +108,7 @@ print("Eccentricity = ", eccentricity)
 print("Argument of Perigee = ", argPerigee)
 print("Mean Anomaly = ", meanAnomaly)
 print("Mean Motion = ", meanMotion)
+'''
 
 # FLOATING POINT CONVERSION TO HEX
 def toInt(s):
@@ -145,7 +187,7 @@ MA_tle = MA << int(4*8)
 MM_tle = MM
 
 DATA_PACKET = EP_tle + DV_tle + DT_tle + IN_tle + RN_tle + EC_tle + AP_tle + MA_tle + MM_tle
-print("\nEncoded TLE Packet \n\n{}\n" .format(hex(DATA_PACKET)))
+print("\nEncoded TLE Packet for {}\n{}\n" .format(satellite,hex(DATA_PACKET)))
 
 ##################################################################### 
 
