@@ -208,8 +208,14 @@ print('',UL1,'\n',UL2,'\n',UL3,'\n',UL4)
 # DOWNLINK COMMAND
 DL = '51 00 35 04 B0 00 00 01 00 00 01'
 
+
+
+
 # CREATE GUI TO PRINT UPLINK AND DOWNLINK COMMANDS FOR THE TLE
 timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+
+
 def create_gui():
     lines_of_strings = [
         'Retrieved: ' + timestamp + '\n\n',
@@ -226,16 +232,43 @@ def create_gui():
 
     root = tk.Tk()
     root.title("Uplink & Downlink Commands for {} TLE".format(name))
-    root.geometry("600x220")
+    root.geometry("600x285")
 
-    text_widget = tk.Text(root, height=100, width=100)
+    text_widget = tk.Text(root, height=14, width=80)
     text_widget.pack()
 
+    # PRINT THE TLE, ENCODED HEX, AND UL/DL COMMANDS
     for line in lines_of_strings:
         text_widget.insert(tk.END, line)
-            
+
+    # CREATE BUTTON TO SAVE TLE FILE INTO TEXT
+    def saveTLEtofile():
+        filename = satellite + '.txt'
+        outputTLE = satellite.rstrip() + '\n' + line1.rstrip() + '\n' + line2.rstrip()
+        saveFlag = 1
+        
+        with open(filename, 'w') as file:
+            file.write(outputTLE)
+
+        #save_widget = tk.Text(root, height=1, width=10)
+        save_widget = tk.Entry(window, width=100, justify='center')
+        save_widget.pack()
+        save_widget.insert(tk.END, "TLE saved")
+        saveFlag = 0
+
+    saveFlag = 0
+    save_button = tk.Button(root, text="Save TLE", command=saveTLEtofile)
+    save_button.pack()
+
+
+    # RUN GUI
     root.mainloop()
 
 create_gui()
+
+# CREATE SAVE BUTTON TO SAVE TLE FILE INTO TEXT
+
+
+
 
 # run "pyinstaller --onefile packetEncoder.py" to create .exe file
