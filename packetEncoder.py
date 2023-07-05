@@ -28,6 +28,7 @@ def inputSatellite():
 # ERROR FLAGS FOR SATELLITE INPUT GUI    
 errorFlag = 1
 notFound = 0
+noInput = 0
 
 # LOOP UNTIL SATELLITE INPUT IS VALID
 while(errorFlag == 1):
@@ -51,7 +52,13 @@ while(errorFlag == 1):
     if notFound == 1:
         text_widget = tk.Text(root, height=100, width=100)
         text_widget.pack()
-        text_widget.insert(tk.END, "Satellite Not Found")
+        text_widget.insert(tk.END, "Satellite not found")
+        notFound = 0
+    if noInput == 1:
+        text_widget = tk.Text(root, height=100, width=100)
+        text_widget.pack()
+        text_widget.insert(tk.END, "Please enter satellite")
+        noInput = 0
 
     # START THE GUI EVENT LOOP
     root.mainloop()
@@ -62,9 +69,13 @@ while(errorFlag == 1):
     # FILTER OUT ENTRIES FOR TARGET SATELLITE 
     filtered_entries = []
     for i in range(0, len(tle_entries), 3):
+        if user_input == '':
+            noInput = 1 # SET FLAG IF NO INPUT 
+            break
         if user_input == tle_entries[i].strip():
             notFound = 0 # CLEAR NOT FOUND FLAG
             errorFlag = 0 # CLEAR ERROR FLAG
+            noInput = 0 # CLEAR NO INPUT FLAG
             filtered_entries.extend(tle_entries[i:i+3])
             break
         else:
@@ -193,28 +204,23 @@ print("\nEncoded TLE Packet for {}\n{}\n" .format(satellite,hex(DATA_PACKET)))
 
 # GENERATE UPLINK COMMAND
 
-UL_DATA1 = hex((DATA_PACKET & 0xFFFFFFFFFFFFFFFF000000000000000000000000000000000000000000000000) >> 24*8).upper()
-UL_DATA2 = hex((DATA_PACKET & 0x0000000000000000FFFFFFFFFFFFFFFF00000000000000000000000000000000) >> 16*8).upper()
-UL_DATA3 = hex((DATA_PACKET & 0x00000000000000000000000000000000FFFFFFFFFFFFFFFF0000000000000000) >> 8*8).upper()
-UL_DATA4 = hex((DATA_PACKET & 0x000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF)).upper()
+UL_DATA1 = hex((DATA_PACKET & 0xFFFFFFFFFFFFFFFF000000000000000000000000000000000000000000000000) >> 24*8).upper()[2:].zfill(16)
+UL_DATA2 = hex((DATA_PACKET & 0x0000000000000000FFFFFFFFFFFFFFFF00000000000000000000000000000000) >> 16*8).upper()[2:].zfill(16)
+UL_DATA3 = hex((DATA_PACKET & 0x00000000000000000000000000000000FFFFFFFFFFFFFFFF0000000000000000) >> 8*8).upper()[2:].zfill(16)
+UL_DATA4 = hex((DATA_PACKET & 0x000000000000000000000000000000000000000000000000FFFFFFFFFFFFFFFF)).upper()[2:].zfill(16)
 
-UL1 = '51 00 31 {} {} {} {} {} {} {} {}'.format(UL_DATA1[2:4], UL_DATA1[4:6], UL_DATA1[6:8], UL_DATA1[8:10], UL_DATA1[10:12], UL_DATA1[12:14], UL_DATA1[14:16], UL_DATA1[16:18])
-UL2 = '51 00 32 {} {} {} {} {} {} {} {}'.format(UL_DATA2[2:4], UL_DATA2[4:6], UL_DATA2[6:8], UL_DATA2[8:10], UL_DATA2[10:12], UL_DATA2[12:14], UL_DATA2[14:16], UL_DATA2[16:18])
-UL3 = '51 00 33 {} {} {} {} {} {} {} {}'.format(UL_DATA3[2:4], UL_DATA3[4:6], UL_DATA3[6:8], UL_DATA3[8:10], UL_DATA3[10:12], UL_DATA3[12:14], UL_DATA3[14:16], UL_DATA3[16:18])
-UL4 = '51 00 34 {} {} {} {} {} {} {} {}'.format(UL_DATA4[2:4], UL_DATA4[4:6], UL_DATA4[6:8], UL_DATA4[8:10], UL_DATA4[10:12], UL_DATA4[12:14], UL_DATA4[14:16], UL_DATA4[16:18])
+UL1 = '51 00 31 {} {} {} {} {} {} {} {}'.format(UL_DATA1[0:2], UL_DATA1[2:4], UL_DATA1[4:6], UL_DATA1[6:8], UL_DATA1[8:10], UL_DATA1[10:12], UL_DATA1[12:14], UL_DATA1[14:16])
+UL2 = '51 00 32 {} {} {} {} {} {} {} {}'.format(UL_DATA2[0:2], UL_DATA2[2:4], UL_DATA2[4:6], UL_DATA2[6:8], UL_DATA2[8:10], UL_DATA2[10:12], UL_DATA2[12:14], UL_DATA2[14:16])
+UL3 = '51 00 33 {} {} {} {} {} {} {} {}'.format(UL_DATA3[0:2], UL_DATA3[2:4], UL_DATA3[4:6], UL_DATA3[6:8], UL_DATA3[8:10], UL_DATA3[10:12], UL_DATA3[12:14], UL_DATA3[14:16])
+UL4 = '51 00 34 {} {} {} {} {} {} {} {}'.format(UL_DATA4[0:2], UL_DATA4[2:4], UL_DATA4[4:6], UL_DATA4[6:8], UL_DATA4[8:10], UL_DATA4[10:12], UL_DATA4[12:14], UL_DATA4[14:16])
 
 print('',UL1,'\n',UL2,'\n',UL3,'\n',UL4)
 
 # DOWNLINK COMMAND
 DL = '51 00 35 04 B0 00 00 01 00 00 01'
 
-
-
-
 # CREATE GUI TO PRINT UPLINK AND DOWNLINK COMMANDS FOR THE TLE
 timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-
-
 
 def create_gui():
     lines_of_strings = [
@@ -232,7 +238,7 @@ def create_gui():
 
     root = tk.Tk()
     root.title("Uplink & Downlink Commands for {} TLE".format(name))
-    root.geometry("600x285")
+    root.geometry("600x273")
 
     text_widget = tk.Text(root, height=14, width=80)
     text_widget.pack()
@@ -251,7 +257,7 @@ def create_gui():
             file.write(outputTLE)
 
         #save_widget = tk.Text(root, height=1, width=10)
-        save_widget = tk.Entry(window, width=100, justify='center')
+        save_widget = tk.Entry(root, width=100, justify='center')
         save_widget.pack()
         save_widget.insert(tk.END, "TLE saved")
         saveFlag = 0
