@@ -300,3 +300,6 @@ if __name__ == "__main__":
     t1.start()
 
     root.mainloop()
+
+
+# run "pyinstaller --onefile groundStationSW.py" to create .exe file
