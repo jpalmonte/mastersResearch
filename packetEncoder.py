@@ -108,18 +108,6 @@ for tle in satellite_tle:
     meanAnomaly = float(line2[43:51].strip())
     meanMotion = float(line2[52:63].strip())
 
-# PRINT FOR DEBUGGING
-'''print("TLE Data \n")
-print('Epoch Year and Julian Date Fraction = ', epoch)
-print('1st Derivative of Mean Motion = ', derivative)
-print('Drag Term = ', drag)
-print('Inclination = ', inclination)
-print("Right Ascension of the Ascending Node = ", raan)
-print("Eccentricity = ", eccentricity)
-print("Argument of Perigee = ", argPerigee)
-print("Mean Anomaly = ", meanAnomaly)
-print("Mean Motion = ", meanMotion)
-'''
 
 # FLOATING POINT CONVERSION TO HEX
 def toInt(s):
@@ -272,10 +260,5 @@ def create_gui():
     root.mainloop()
 
 create_gui()
-
-# CREATE SAVE BUTTON TO SAVE TLE FILE INTO TEXT
-
-
-
 
 # run "pyinstaller --onefile packetEncoder.py" to create .exe file
