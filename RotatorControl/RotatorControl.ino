@@ -1,11 +1,9 @@
 //Rotator6.ino - Mini Satellite-Antenna Rotator.
 //Copyright (c) 2015-2018 Julie VK3FOWL and Joe VK3YSP
 //Released under the GNU General Public License.
-
 // Adapted for MS Research of John Paul Almonte 213D5013 Departent of Space Systems Engineering, Kyushu Insitute of Technology
-// Supporting libraries found in https://github.com/jpalmonte/mastersResearch
+// Supporting libraries found in https://github.com/jpalmonte/mastersResearch/tree/main/RotatorControl
 
-//Includes
 #include <Arduino.h>
 #include <Wire.h>
 #include <EEPROM.h>
@@ -13,7 +11,6 @@
 #include "lsm.h"
 #include "mot.h"
 
-//Constants
 //User configuration section:
 const int MotorType = FWDREV;       //Please uncomment this line for the L298N DC motor driver.
 const int SensorType = LSM303DLHC;  //Please uncomment this line to use the LSM303DLHC sensor.
@@ -59,14 +56,11 @@ float elInc;            //EL increment for demo mode
 Modes mode;             //Rotator mode
 
 //Objects
-
 //Motor driver object: Mot xxMot(Driver-Type, Filter-Alpha, Gain, Fwd-Pin, Rev/Dir-Pin)
 Mot azMot(MotorType, azAlpha, azGain, azFwdPin, azRevPin); //AZ motor driver object
 Mot elMot(MotorType, elAlpha, elGain, elFwdPin, elRevPin); //EL motor driver object
-
 //LSM sensor object: Lsm lsm(Sensor-Type, Filter-Alpha)
 Lsm lsm(SensorType,lsmAlpha);
-
 //Non-blocking Timer object
 Timer t1(100);
 
@@ -190,13 +184,6 @@ void getWindup(bool *windup,  float *azWindup, float *azOffset, float *azLast, f
 
   //Detect a windup condition where the antenna has rotated more than 450 degrees from home
   if (abs(*azWindup) > WINDUP_LIMIT) *windup = true;    //Set the windup condition - it is reset later when the antenna nears home
-
-  //Perform the anti-windup procedure at the end of each pass - This is overkill unless you absolutely don't want anti-windup during a pass
-  //  if (elSet <= 0)
-  //    if (elLast > 0)
-  //      if (mode == tracking) {
-  //        *windup = true;
-  //      }
 
   //Save the current elevation reading for the next iteration
   *elLast = elSet;
