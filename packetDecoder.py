@@ -5,24 +5,76 @@ DECODE 32-BYTE DATA PACKET INTO TLE SECTIONS
 
 import numpy as np
 from ctypes import *
+import tkinter as tk
+import sys
+
+#DATA_PACKET = 0x2f4790da29a801c26c503a6ba3318833a8b8e001c9e420b9d0e321ca417cc1bf
+
+def inputTLEHEX():
+    global user_input
+    user_input = entry.get() 
+    root.destroy()
   
-# SAMPLE DATA PACKET
-# DIWATA-2B TLE 6/13/2023
-# DATA_PACKET = 0x2d3dd5e44f88000064703df9b6200e1999e9b00263f53a4e10c005e9416ef255 
-# DIWATA-2B TLE 8/1/2023
-# DATA_PACKET = 0x2d56875c8758000079a04a3cb62011fb2a5db0026940a8a8415222e7416ef929
-# DIWATA-2B TLE 8/2/2023
-# DATA_PACKET = 0x2d56cda41e6800007f104d7ab620120b31c2f00265d0924ce1550871416ef94a
-# DIWATA-2B TLE 8/3/2023
-# DATA_PACKET = 0x2d578eafdf38000089705397b62012200038000260b071bfd15910ef416ef98a
-# DIWATA-2B TLE 8/4/2023
-# DATA_PACKET = 0x2d5808c40858000088705300b6201240081d90025d1059cec15c0fc7416ef9b4
-# DIWATA-2B TLE 8/5/2023
-# DATA_PACKET = 0x2d5848a7df98000081304eb1b620126009c910025a404978615e1503416ef9cc
-# DIWATA-2B TLE 8/6/2023
-# DATA_PACKET = 0x2d58c2bbecd800008a2053f5b62012e011ae900256e03877d16024dd416efa08
-# DIWATA-2B TLE 8/7/2023
-DATA_PACKET = 0x2d59908e6d1800006af04183b62012902079500250700994916612a8416efa2c
+# ERROR FLAGS FOR TLE HEX INPUT GUI    
+errorFlag = 1
+noInput = 0
+wrongLen = 0
+wrongFormat = 0
+
+while(errorFlag == 1):
+    root = tk.Tk()
+    root.title("MicroOrbiter-1 HEX TLE Decoder")
+    root.geometry("410x115")
+
+    # CREATE A LABEL AND AN ENTRY FIELD
+    label = tk.Label(root, text="Input downloaded HEX:")
+    label.pack()
+    format = tk.Label(root, text='Format: 0xNNNN...')
+    format.pack()
+    entry = tk.Entry(root, width = 67)
+    entry.pack()
+
+    # CREATE A BUTTON TO STORE THE INPUT AND CLOSE THE GUI
+    button = tk.Button(root, text="Input HEX", command=inputTLEHEX)
+    button.pack()
+
+    root.bind('<Return>', lambda event: inputTLEHEX())
+
+    # CONDITIONAL CHECK IF THE SATELLITE INPUT IS NOT VALID OR AVAILABLE
+    if noInput == 1:
+      text_widget = tk.Text(root, height=100, width=55)
+      text_widget.pack()
+      text_widget.insert(tk.END, "Please enter HEX to decode")
+      noInput = 0
+    if wrongLen == 1:
+      text_widget = tk.Text(root, height=100, width=55)
+      text_widget.pack()
+      text_widget.insert(tk.END, "Please enter proper 32 byte length HEX")
+      wrongLen = 0
+    if wrongFormat == 1:
+      text_widget = tk.Text(root, height=100, width=55 )
+      text_widget.pack()
+      text_widget.insert(tk.END, "Please add leading 0x")
+      wrongFormat = 0
+
+    # START THE GUI EVENT LOOP
+    root.mainloop()
+
+     
+    try:
+      if user_input == '':
+        noInput = 1 # SET FLAG IF NO INPUT
+      elif len(user_input) < 64 or len(user_input) > 66:
+        wrongLen = 1 # SET FLAG FOR WRONG PACKET LENGTH
+      elif user_input[0:2] != '0x':
+        wrongFormat = 1 # SET FLAG IF NO LEADING 0X
+      elif len(user_input) < 66:
+        wrongLen = 1
+      else:
+        errorFlag = 0
+    except:
+      print("Terminated")
+      sys.exit()
 
 # MASKS TO GET SPECIFIC SECTION OF DATA PACKET
 EP_mask = 0xFFFFFFFFFFF00000000000000000000000000000000000000000000000000000
@@ -35,8 +87,9 @@ AP_mask = 0x0000000000000000000000000000000000000000000FFFFFF000000000000000
 MA_mask = 0x0000000000000000000000000000000000000000000000000FFFFFFF00000000
 MM_mask = 0x00000000000000000000000000000000000000000000000000000000FFFFFFFF
 
+DATA_PACKET = int(user_input,16)
 
-print("Sample TLE Packet = {} \n" .format(hex(DATA_PACKET)))
+print("TLE Packet = {} \n" .format(hex(DATA_PACKET)))
 
 # GET EPOCH YEAR AND JULIAN DAY FRACTION
 EP = (DATA_PACKET & EP_mask) >> int(26.5*8)
@@ -154,6 +207,7 @@ print("Mean Anomaly = ", meanAnomaly)
 meanMotion = toFloat(MM)
 meanMotion = "{:.8f}".format(meanMotion)
 print("Mean Motion = ", meanMotion)
+print()
 
 
 #########################################################################################################
@@ -177,14 +231,14 @@ def checkSum(digit):
         checksum = checksum + int(x)
     return checksum%10
 
-### ABRITARY CONSTANTS FOR DIWATA-2B
+### ABRITARY CONSTANTS FOR MICROORBITER-1
 
 # LINE 1
-satelliteName = 'DIWATA-2B'
-satelliteCatalog = 43678
+satelliteName = 'MicroOrbiter-1'
+satelliteCatalog = 59483
 classification = 'U'
-intDesignatorYear = 18084
-intDesignatorPiece = 'H'
+intDesignatorYear = 98067
+intDesignatorPiece = 'WF'
 secondDerivative = '00000+0'
 ephemeris = 0
 elementSetNumber = 999 # ARBRITARY NUMBER
@@ -230,7 +284,43 @@ TLE_LINE2 = insertData(TLE_LINE2, str(checkSum(TLE_LINE2)), 68)
 # CREATE TLE FILE 
 outputTLE = satelliteName + '\n' + TLE_LINE1.rstrip() + '\n' + TLE_LINE2.rstrip()
 print(outputTLE)
+ 
+def create_gui():
+    root = tk.Tk()
+    root.title("MicroOrbiter-1 Decoded TLE from HEX")
+    root.geometry("600x180")
 
-with open('satelliteTLE.txt', 'w') as file:
-	file.write(outputTLE)
-	file.close()
+    text_widget = tk.Text(root, height=8, width=80)
+    text_widget.pack()
+
+    lines_to_print = [
+      'Input HEX: \n' + str(hex(DATA_PACKET)) + '\n\n',
+      'Decoded TLE from HEX: \n\n',
+      outputTLE
+    ]
+
+    # PRINT THE DECODED HEX
+    for line in lines_to_print:
+      text_widget.insert(tk.END, line)
+
+    # CREATE BUTTON TO SAVE TLE FILE INTO TEXT
+    def saveTLEtofile():
+        filename = satelliteName + '.txt'
+        
+        with open(filename, 'w') as file:
+            file.write(outputTLE)
+
+        #save_widget = tk.Text(root, height=1, width=10)
+        save_widget = tk.Entry(root, width=100, justify='center')
+        save_widget.pack()
+        save_widget.insert(tk.END, "TLE saved")
+        
+    save_button = tk.Button(root, text="Save TLE", command=saveTLEtofile)
+    save_button.pack()
+
+    # RUN GUI
+    root.mainloop()
+
+create_gui()
+
+# run "pyinstaller --onefile packetDecoder.py" to create .exe file
